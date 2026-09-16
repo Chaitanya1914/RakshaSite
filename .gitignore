@@ -111,3 +111,6 @@ Desktop.ini
 *.db
 *.sqlite3
 rakshasite.db
+
+# Team internal docs
+team/
