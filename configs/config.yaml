@@ -1,0 +1,171 @@
+# ==============================================================================
+# RakshaSite Configuration Master
+# Autonomous Multi-Agent Construction Safety Compliance System
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Computer Vision & Object Tracking Settings
+# ------------------------------------------------------------------------------
+model:
+  name: "yolov8-construction-ppe"
+  weights_path: "./models/best.pt"
+  confidence_threshold: 0.70
+  iou_threshold: 0.45
+  image_size: 640
+  device: "cuda"  # Options: 'cuda', 'cpu', 'mps'
+  half_precision: true
+
+  # DeepSORT Tracking Configuration
+  tracking:
+    tracker_type: "deepsort"
+    max_age: 30
+    n_init: 3
+    nn_budget: 100
+    max_cosine_distance: 0.2
+
+  # Target PPE and Personnel Classes
+  classes:
+    0: "helmet"
+    1: "no_helmet"
+    2: "vest"
+    3: "no_vest"
+    4: "gloves"
+    5: "no_gloves"
+    6: "boots"
+    7: "no_boots"
+    8: "harness"
+    9: "no_harness"
+    10: "person"
+
+# ------------------------------------------------------------------------------
+# 2. Safety Risk Assessment Engine
+# ------------------------------------------------------------------------------
+risk_engine:
+  # Consecutive frame count required to confirm an ongoing safety violation
+  frame_confirmation_count: 5
+
+  # Safety risk severity tiers (0 - 100 scale)
+  thresholds:
+    low: 0
+    medium: 40
+    high: 60
+    critical: 80
+
+  # Base weight contributed per active violation
+  violation_weights:
+    no_helmet: 30
+    no_vest: 20
+    no_harness_elevated: 45
+    no_boots: 15
+    no_gloves: 10
+
+  # Site zone risk multiplier coefficients
+  zone_multipliers:
+    ground_level: 1.0
+    scaffolding_elevated: 1.6
+    excavation_trench: 1.4
+    heavy_machinery_zone: 1.5
+    confined_space: 1.8
+
+# ------------------------------------------------------------------------------
+# 3. Autonomous Multi-Agent Orchestration (LangGraph & Gemini)
+# ------------------------------------------------------------------------------
+agents:
+  llm:
+    provider: "google-genai"
+    model_name: "gemini-1.5-flash"
+    fallback_model: "gemini-1.5-pro"
+    temperature: 0.2
+    max_tokens: 2048
+    request_timeout: 30
+
+  orchestration:
+    framework: "langgraph"
+    max_agent_iterations: 5
+    recursion_limit: 15
+
+  roles:
+    vision_analyst:
+      enabled: true
+      confidence_cutoff: 0.65
+      track_history_window: 10
+
+    compliance_officer:
+      enabled: true
+      statutory_framework: "BOCW Act 1996 & Central Rules 1998"
+      secondary_framework: "OSHA 1926 Safety & Health Regulations"
+
+    risk_assessor:
+      enabled: true
+      temporal_decay_factor: 0.9
+      exponential_smoothing_alpha: 0.7
+
+    incident_manager:
+      enabled: true
+      auto_escalate_critical: true
+      notification_channels:
+        - "websocket"
+        - "email"
+        - "sms"
+
+# ------------------------------------------------------------------------------
+# 4. Regulatory RAG & Knowledge Base (ChromaDB)
+# ------------------------------------------------------------------------------
+rag:
+  chroma:
+    persist_directory: "./chroma_db"
+    collection_name: "bocw_osha_compliance"
+
+  embeddings:
+    model_name: "sentence-transformers/all-MiniLM-L6-v2"
+    device: "cpu"
+    normalize_embeddings: true
+
+  text_splitter:
+    chunk_size: 1000
+    chunk_overlap: 150
+    separators: ["\n\n", "\n", "Section ", "Rule ", ". ", " "]
+
+  retrieval:
+    top_k: 4
+    score_threshold: 0.60
+
+  knowledge_base_dir: "./knowledge_base"
+  supported_file_types:
+    - ".pdf"
+    - ".txt"
+    - ".md"
+
+# ------------------------------------------------------------------------------
+# 5. Relational Database & Audit Storage
+# ------------------------------------------------------------------------------
+database:
+  url: "sqlite:///rakshasite.db"
+  echo: false
+  pool_pre_ping: true
+  pool_size: 10
+  max_overflow: 20
+
+# ------------------------------------------------------------------------------
+# 6. Dashboard, WebSockets & Audit Reports
+# ------------------------------------------------------------------------------
+dashboard:
+  api:
+    host: "0.0.0.0"
+    port: 8000
+    debug: false
+    cors_origins:
+      - "http://localhost:3000"
+      - "http://localhost:5173"
+      - "http://127.0.0.1:5173"
+
+  websocket:
+    endpoint: "/ws/live-stream"
+    stream_fps: 15
+    max_clients: 25
+
+  reports:
+    output_dir: "./reports"
+    format: "pdf"
+    default_title: "RakshaSite Autonomous Safety Audit Report"
+    include_violation_snapshots: true
