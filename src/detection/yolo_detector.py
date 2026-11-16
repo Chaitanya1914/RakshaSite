@@ -29,6 +29,40 @@ DEFAULT_CLASSES = ["person", "helmet", "no_helmet", "vest", "no_vest"]
 PPE_CLASSES = {"helmet", "no_helmet", "vest", "no_vest"}
 PERSON_CLASS = "person"
 
+# Canonical normalization map for Roboflow CSS, SH17, and Ultralytics Construction-PPE models
+CANONICAL_CLASS_MAP = {
+    "person": "person",
+    "Person": "person",
+    "helmet": "helmet",
+    "Hardhat": "helmet",
+    "hardhat": "helmet",
+    "no_helmet": "no_helmet",
+    "NO-Hardhat": "no_helmet",
+    "no-hardhat": "no_helmet",
+    "head": "no_helmet",
+    "vest": "vest",
+    "Safety Vest": "vest",
+    "safety-vest": "vest",
+    "safety_vest": "vest",
+    "no_vest": "no_vest",
+    "NO-Safety Vest": "no_vest",
+    "no-safety vest": "no_vest",
+    "no_safety_vest": "no_vest",
+    "gloves": "gloves",
+    "Gloves": "gloves",
+    "no_gloves": "no_gloves",
+    "boots": "boots",
+    "no_boots": "no_boots",
+    "harness": "harness",
+    "no_harness": "no_harness",
+    "machinery": "machinery",
+    "Excavator": "machinery",
+    "vehicle": "vehicle",
+    "Safety Cone": "safety_cone",
+    "Mask": "mask",
+    "NO-Mask": "no_mask",
+}
+
 
 class YOLODetector:
     """
@@ -96,6 +130,14 @@ class YOLODetector:
         else:
             self.device = None
 
+        try:
+            import torch
+
+            if self.device in ("0", 0, "cuda") and not torch.cuda.is_available():
+                self.device = "cpu"
+        except Exception:
+            pass
+
         self.min_area_ratio = float(min_area_ratio)
 
         self.logger.info(f"Loading YOLO model from: {self.model_path}")
@@ -151,19 +193,22 @@ class YOLODetector:
 
     def get_class_name(self, class_id: int) -> str:
         """
-        Map class ID to class name.
+        Map class ID to canonical RakshaSite class name.
 
         Args:
             class_id: Numerical class index.
 
         Returns:
-            Class name string.
+            Canonical class name string ('person', 'helmet', 'no_helmet', 'vest', 'no_vest', etc.).
         """
+        raw_name = None
         if hasattr(self.model, "names") and isinstance(self.model.names, dict):
-            return self.model.names.get(class_id, str(class_id))
-        if 0 <= class_id < len(self.class_names):
-            return self.class_names[class_id]
-        return f"class_{class_id}"
+            raw_name = self.model.names.get(class_id)
+        if raw_name is None and 0 <= class_id < len(self.class_names):
+            raw_name = self.class_names[class_id]
+        if raw_name is None:
+            return f"class_{class_id}"
+        return CANONICAL_CLASS_MAP.get(raw_name, CANONICAL_CLASS_MAP.get(raw_name.lower(), raw_name))
 
     @staticmethod
     def _is_inside_person(

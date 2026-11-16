@@ -1,0 +1,50 @@
+{
+  "video_source": "data/raw/hardhat_demo.mp4",
+  "frames_processed": 90,
+  "total_violation_detections": 210,
+  "annotated_video_output": "reports\\demo_annotated_output.mp4",
+  "annotated_snapshot_output": "reports\\demo_snapshot_violation.jpg",
+  "pdf_audit_report": "reports\\safety_audit.pdf",
+  "sample_agent_output": {
+    "compliance_score": 60.0,
+    "alert_message": "MEDIUM risk: Worker w-1 (no_helmet) | LOW risk: Worker w-1 (no_vest) | MEDIUM risk: Worker w-2 (no_helmet) | LOW risk: Worker w-2 (no_vest)",
+    "regulations_cited": [
+      {
+        "worker_id": "w-1",
+        "violation_type": "no_helmet",
+        "zone": "ground_level",
+        "risk_score": 43.23,
+        "risk_label": "MEDIUM",
+        "bocw_section": "Section 38(1)(a) & BOCW Rule 46 (IS 2925:1984)",
+        "penalty": "Section 47: Fine up to Rs. 2,000 or imprisonment up to 3 months, or both (Rs. 100/day for continuing contravention)."
+      },
+      {
+        "worker_id": "w-1",
+        "violation_type": "no_vest",
+        "zone": "ground_level",
+        "risk_score": 33.19,
+        "risk_label": "LOW",
+        "bocw_section": "Section 38(1)(a), Section 40(2)(r) & BOCW Rule 45",
+        "penalty": "Section 47: Fine up to Rs. 2,000 or imprisonment up to 3 months, or both."
+      },
+      {
+        "worker_id": "w-2",
+        "violation_type": "no_helmet",
+        "zone": "ground_level",
+        "risk_score": 42.86,
+        "risk_label": "MEDIUM",
+        "bocw_section": "Section 38(1)(a) & BOCW Rule 46 (IS 2925:1984)",
+        "penalty": "Section 47: Fine up to Rs. 2,000 or imprisonment up to 3 months, or both (Rs. 100/day for continuing contravention)."
+      },
+      {
+        "worker_id": "w-2",
+        "violation_type": "no_vest",
+        "zone": "ground_level",
+        "risk_score": 32.92,
+        "risk_label": "LOW",
+        "bocw_section": "Section 38(1)(a), Section 40(2)(r) & BOCW Rule 45",
+        "penalty": "Section 47: Fine up to Rs. 2,000 or imprisonment up to 3 months, or both."
+      }
+    ]
+  }
+}

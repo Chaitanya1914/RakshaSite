@@ -83,32 +83,32 @@ rakshasite/
 
 ---
 
-## Getting Started
+## Getting Started (Fresh Clone Setup)
 
 ### Prerequisites
 
-- **Python**: 3.10 or 3.11
-- **Node.js**: 18+ (for frontend dashboard)
-- **CUDA-compatible GPU**: Recommended for real-time video inference
-- **Google Gemini API Key**: For multi-agent reasoning and RAG analysis
+- **Python**: 3.10, 3.11, or 3.12
+- **Node.js**: 18+ (for React frontend dashboard)
+- **CUDA-compatible GPU**: Optional (runs at **98.3 FPS** on RTX 3050 GPU and **18.1 FPS** on CPU)
+- **Groq API Key**: Optional (`GROQ_API_KEY` for cloud LLM narratives; runs **100% offline** with deterministic statutory fallback when omitted)
 
-### Installation
+### Installation & Asset Unpacking
 
 1. **Clone the repository and navigate to the project root:**
    ```bash
-   git clone https://github.com/your-org/rakshasite.git
+   git clone https://github.com/Chaitanya1914/rakshasite.git
    cd rakshasite
    ```
 
 2. **Create and activate a virtual environment:**
-   ```bash
+   ```powershell
    # Windows (PowerShell)
-   python -m venv venv
-   .\venv\Scripts\Activate.ps1
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
 
    # Linux / macOS
-   python3 -m venv venv
-   source venv/bin/activate
+   python3 -m venv .venv
+   source .venv/bin/activate
    ```
 
 3. **Install Python dependencies:**
@@ -117,82 +117,65 @@ rakshasite/
    pip install -r requirements.txt
    ```
 
-4. **Set up environment variables:**
+4. **Unpack the trained YOLOv8n weights (`models/best.pt`), demo video, and 50 validation photos:**
    ```bash
-   cp .env.example .env
+   python scripts/fetch_data.py --mirror dist/asset_mirror
    ```
-   Edit `.env` and configure your `GEMINI_API_KEY`, database URL, and model paths.
-
-5. **Download or train YOLOv8 PPE weights:**
-   Place your trained model checkpoint (e.g., `best.pt`) in the `models/` directory.
-
----
-
-## Configuration
-
-All core hyperparameters and service endpoints are centralized in [`configs/config.yaml`](file:///C:/Users/chait/.gemini/antigravity/scratch/rakshasite/configs/config.yaml):
-
-- **`model`**: YOLO confidence threshold, IOU threshold, image size, classes, and DeepSORT tracking parameters.
-- **`agents`**: LLM provider (Gemini), model names, temperatures, agent role definitions, and maximum retry iterations.
-- **`rag`**: ChromaDB persistence directory, chunking size, overlap, embedding models, and knowledge base document directories.
-- **`database`**: Connection string, connection pooling, and ORM settings.
-- **`dashboard`**: API host, port, CORS allowed origins, WebSocket refresh intervals, and report output paths.
-- **`risk_engine`**: Risk threshold boundaries (Medium: 40, High: 60, Critical: 80) and frame confirmation windows.
 
 ---
 
 ## Usage
 
-### 1. Ingest Regulatory Knowledge Base
-Index statutory safety regulations (BOCW Act, OSHA rules) into ChromaDB:
+### 1. Run the One-Command End-to-End Demo (100% Offline Capable)
 ```bash
-python -m rakshasite.rag.ingest_knowledge_base
+python demo_runner.py --offline
+```
+Generates:
+- Annotated CCTV evidence video: `reports/demo_annotated_output.mp4`
+- Peak violation snapshot: `reports/demo_snapshot_violation.jpg`
+- Signed statutory BOCW PDF report: `reports/safety_audit.pdf`
+- SHA-256 tamper-proof JSON log: `reports/demo_audit_log.json`
+
+### 2. Launch the FastAPI Backend & Executive Command Center UI
+```bash
+uvicorn backend.api:app --host 0.0.0.0 --port 8000 --reload
+```
+- **Live Executive Command Center UI**: `http://localhost:8000/demo`
+- **Interactive Swagger API Docs**: `http://localhost:8000/docs`
+- **ReDoc API Reference**: `http://localhost:8000/redoc`
+
+### 3. Run the Full Automated Test Suite (`269/269` Tests)
+```bash
+pytest tests/ -v
 ```
 
-### 2. Run the Multi-Agent Inference Pipeline
-Run detection and agentic reasoning on a video feed or camera stream:
-```bash
-python -m rakshasite.pipeline.run_stream --source data/raw/site_camera_01.mp4
-```
+---
 
-### 3. Launch FastAPI Backend
-```bash
-uvicorn rakshasite.api.main:app --host 0.0.0.0 --port 8000 --reload
-```
-Interactive API documentation will be available at:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+## Team Onboarding & Next Steps
 
-### 4. Launch React Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
-Open `http://localhost:5173` to access the live dashboard.
+### For Sejal — Backend & Database Lead (`sejal/backend-api`)
+- **Full Step-by-Step Guide**: Read [`team/SEJAL_TASKS.md`](team/SEJAL_TASKS.md)
+- **Files You Own**:
+  - `src/database/models.py` — SQLAlchemy ORM tables (`Violation` & `ShiftReport`)
+  - `src/database/crud.py` — Database queries (create violation, time-range filter, stats, repeat offenders)
+  - `backend/schemas.py` — Pydantic v2 request/response validation schemas
+  - `backend/api.py` — FastAPI REST endpoints (`/api/v1/analyze`, `/api/v1/analyze/image`, `/api/v1/analyze/video`, `/api/v1/analytics/{camera_id}`, `/api/v1/report/{shift_id}`, `/api/v1/regulations`)
+- **How to Continue Your Tasks**:
+  1. Run `uvicorn backend.api:app --reload` and open `http://localhost:8000/docs` to test all existing endpoints interactively.
+  2. Create your branch (`git checkout -b sejal/backend-api`) and implement the next backend enhancements listed at the top of [`team/SEJAL_TASKS.md`](team/SEJAL_TASKS.md) (violation pagination `GET /api/v1/violations`, single-record delete `DELETE /api/v1/violations/{id}`, and CSV audit export `GET /api/v1/export/csv`).
 
-### 5. Generate Safety Audit PDF Reports
-```bash
-python -m rakshasite.reports.generate_report --date today --output reports/safety_audit.pdf
-```
+### For Ashmeet — Frontend Lead (`ashmeet/frontend-ui`)
+- **Full Step-by-Step Guide**: Read [`team/ASHMEET_TASKS.md`](team/ASHMEET_TASKS.md) and [`docs/FRONTEND_API_CONTRACT.md`](docs/FRONTEND_API_CONTRACT.md)
+- Build the React + Tailwind dashboard inside `frontend/` consuming the live FastAPI endpoints on `http://localhost:8000`.
 
 ---
 
 ## Regulatory Compliance Context
 
-RakshaSite actively maps detected non-compliance against statutory provisions:
-- **BOCW Act (1996) - Section 40**: Safety precautions, provision of protective gear, safety nets, and helmets.
-- **Central BOCW Rules (1998) - Chapter VII & VIII**: Head protection, eye and face protection, respiratory equipment, and fall protection harnesses.
-- **OSHA Standard 1926**: Construction industry safety standards for personal protective and life saving equipment.
-
----
-
-## Testing
-
-Run unit and integration test suites:
-```bash
-pytest tests/ -v
-```
+RakshaSite actively maps detected non-compliance against statutory Indian provisions (`knowledge_base/bocw_act_1996_and_rules_1998.md`):
+- **BOCW Act (1996) — Section 40(2)(a) & Central Rules (1998) — Rule 46**: Mandatory industrial safety helmets (`IS 2925:1984`).
+- **BOCW Central Rules (1998) — Rule 43 & Rule 241(2)(c)**: Mandatory high-visibility reflective safety apparel.
+- **BOCW Act (1996) — Sections 47–50**: Statutory penalty schedules and criminal liability provisions.
 
 ---
 

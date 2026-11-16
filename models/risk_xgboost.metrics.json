@@ -1,0 +1,50 @@
+{
+  "n_samples": 4000,
+  "nan_values_found": 0,
+  "baseline_ridge": {
+    "mae": 1.4891,
+    "rmse": 2.0752,
+    "r2": 0.9923,
+    "tier_macro_f1": 0.9614
+  },
+  "xgboost": {
+    "mae": 0.2518,
+    "rmse": 0.3426,
+    "r2": 0.9998,
+    "tier_accuracy": 0.995,
+    "tier_macro_f1": 0.995
+  },
+  "confusion_matrix_labels": [
+    "LOW",
+    "MEDIUM",
+    "HIGH",
+    "CRITICAL"
+  ],
+  "confusion_matrix": [
+    [
+      90,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      126,
+      0,
+      0
+    ],
+    [
+      0,
+      2,
+      150,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      231
+    ]
+  ],
+  "model_path": "models\\risk_xgboost.json"
+}

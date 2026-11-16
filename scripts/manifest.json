@@ -1,0 +1,58 @@
+{
+  "version": "1.0.0",
+  "description": "RakshaSite asset and weights distribution manifest",
+  "generated_at": "2026-11-06T04:57:03Z",
+  "assets": {
+    "weights": {
+      "description": "Trained YOLOv8n PPE Detection Model Checkpoint (Fine-tuned, 10 Classes)",
+      "archive_name": "rakshasite_weights_v1.zip",
+      "archive_sha256": "850eed54a2ab1e96c091eae408c1995f3aad9f995d71ba812d6f94a48fef4823",
+      "archive_size_bytes": 5664250,
+      "target_file": "models/best.pt",
+      "target_sha256": "48fc9bfe7c62ab039052f54bb536935dfebb5f4ee07f73df0895f8a8e6ac6a0e",
+      "target_size_bytes": 6226211,
+      "expected_sha256": "48fc9bfe7c62ab039052f54bb536935dfebb5f4ee07f73df0895f8a8e6ac6a0e",
+      "size_bytes": 6226211,
+      "upstream_url": "https://github.com/Chaitanya1914/RakshaSite/releases/download/v1.0.0/rakshasite_weights_v1.zip",
+      "required": true
+    },
+    "demo_assets": {
+      "description": "Real Construction PPE Video Stream and Sample Still Photographs",
+      "archive_name": "rakshasite_demo_assets_v1.zip",
+      "archive_sha256": "194e532a40980510b4bd0eb84a2c8dd0944bf1919e0ed34c2be9417c3fd718f4",
+      "archive_size_bytes": 4477157,
+      "target_file": "data/raw/hardhat_demo.mp4",
+      "target_sha256": "e4ea71aa6ffc460c430debe677e9cecea6e2a1712d45ce26d48ace0a1aa76a83",
+      "target_size_bytes": 4143534,
+      "expected_sha256": "e4ea71aa6ffc460c430debe677e9cecea6e2a1712d45ce26d48ace0a1aa76a83",
+      "size_bytes": 4143534,
+      "auxiliary_files": [
+        "data/raw/samples/construction-safety.jpg",
+        "data/raw/samples/workers-mask-glasses.jpg",
+        "data/raw/samples/workers-wearing-ppe.jpg"
+      ],
+      "upstream_url": "https://github.com/Chaitanya1914/RakshaSite/releases/download/v1.0.0/rakshasite_demo_assets_v1.zip",
+      "required": true
+    },
+    "val_images": {
+      "description": "Validation Photographic Test Images Matching tests/test_cases.json",
+      "archive_name": "rakshasite_val_real_images_v1.zip",
+      "archive_sha256": "248013424bfb5ed9d9028a4b61b36303a75890accef5142809a045909c2455bd",
+      "archive_size_bytes": 9691799,
+      "target_dir": "data/unified/val/images",
+      "file_count": 50,
+      "total_files": 50,
+      "size_bytes": 9691799,
+      "upstream_url": "https://github.com/Chaitanya1914/RakshaSite/releases/download/v1.0.0/rakshasite_val_real_images_v1.zip",
+      "required": true
+    },
+    "construction_ppe_benchmark": {
+      "description": "Ultralytics 1000-Image Construction-PPE Benchmark Dataset (CC BY 4.0)",
+      "archive_name": "construction-ppe.zip",
+      "target_dir": "data/raw/construction-ppe",
+      "upstream_url": "https://github.com/ultralytics/assets/releases/download/v0.0.0/construction-ppe.zip",
+      "optional": true,
+      "required": false
+    }
+  }
+}

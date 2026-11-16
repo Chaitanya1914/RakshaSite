@@ -11,7 +11,9 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
+dist/*
+!dist/asset_mirror/
+!dist/asset_mirror/*
 downloads/
 eggs/
 .eggs/
@@ -63,6 +65,8 @@ chroma.sqlite3
 # Experiment Tracking
 /mlruns/
 .mlflow/
+/runs/
+/logs/
 
 # Reports and generated PDFs
 /reports/*.pdf
@@ -112,5 +116,8 @@ Desktop.ini
 *.sqlite3
 rakshasite.db
 
-# Team internal docs
-team/
+# Team internal docs (keep Sejal & Ashmeet guides tracked for onboarding)
+team/*
+!team/SEJAL_TASKS.md
+!team/ASHMEET_TASKS.md
+.agents/

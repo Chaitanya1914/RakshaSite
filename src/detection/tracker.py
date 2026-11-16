@@ -127,6 +127,7 @@ class WorkerTracker:
 
         self.latest_ppe_detections: List[Dict[str, Any]] = []
         self.latest_tracked_workers: List[TrackedWorker] = []
+        self.violation_streaks: Dict[str, Dict[str, int]] = {}
 
         self.logger.info(
             f"Initializing DeepSORT tracker: max_age={self.max_age}, n_init={self.n_init}, "
@@ -433,6 +434,15 @@ class WorkerTracker:
 
             is_compliant = len(violations) == 0
 
+            # Update consecutive violation frame streaks for this worker
+            worker_streaks = self.violation_streaks.setdefault(worker_id, {})
+            for v_code in ("NO_HELMET", "NO_VEST"):
+                if v_code in violations:
+                    worker_streaks[v_code] = worker_streaks.get(v_code, 0) + 1
+                else:
+                    worker_streaks[v_code] = 0
+            max_streak = max((worker_streaks.get(v, 1) for v in violations), default=0)
+
             # Update object in place if it's a dict or TrackedWorker
             if isinstance(obj, (dict, TrackedWorker)):
                 obj["has_helmet"] = has_helmet
@@ -440,6 +450,8 @@ class WorkerTracker:
                 obj["violations"] = violations
                 obj["missing_ppe"] = missing_ppe
                 obj["is_compliant"] = is_compliant
+                obj["consecutive_frames"] = max_streak
+                obj["violation_streaks"] = dict(worker_streaks)
 
             record = {
                 "worker_id": worker_id,
@@ -450,6 +462,8 @@ class WorkerTracker:
                 "has_helmet": has_helmet,
                 "has_vest": has_vest,
                 "is_compliant": is_compliant,
+                "consecutive_frames": max_streak,
+                "violation_streaks": dict(worker_streaks),
             }
 
             if only_violators:

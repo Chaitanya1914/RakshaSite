@@ -1,0 +1,26 @@
+{
+  "yolo_only": {
+    "precision": 100.0,
+    "recall": 78.26,
+    "f1_score": 87.8,
+    "false_positive_rate": 0.0,
+    "severity_accuracy": 0.0,
+    "section_citation_accuracy": 0.0
+  },
+  "yolo_plus_rules": {
+    "precision": 95.45,
+    "recall": 91.3,
+    "f1_score": 93.33,
+    "false_positive_rate": 50.0,
+    "severity_accuracy": 36.0,
+    "section_citation_accuracy": 88.0
+  },
+  "full_agent_pipeline": {
+    "precision": 100.0,
+    "recall": 100.0,
+    "f1_score": 100.0,
+    "false_positive_rate": 0.0,
+    "severity_accuracy": 56.0,
+    "section_citation_accuracy": 100.0
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "dataset_rows": 100000,
+  "models": {
+    "RandomForest": {
+      "accuracy_percent": 83.03,
+      "weighted_f1": 0.8299,
+      "macro_f1": 0.7206
+    },
+    "XGBoost": {
+      "accuracy_percent": 83.46,
+      "weighted_f1": 0.8343,
+      "macro_f1": 0.7226
+    }
+  },
+  "best_model": "XGBoost",
+  "best_accuracy_percent": 83.46
+}
